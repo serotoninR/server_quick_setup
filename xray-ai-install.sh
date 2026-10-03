@@ -485,7 +485,7 @@ jq --arg s "$new_sni" --arg d "${new_sni}:443" \
    '.inbounds[0].streamSettings.realitySettings.serverNames = [$s] |
     .inbounds[0].streamSettings.realitySettings.dest = $d' \
    "$CONFIG" > "$tmp" && mv "$tmp" "$CONFIG"
-chmod 600 "$CONFIG"
+chmod 644 "$CONFIG"
 
 systemctl restart xray
 sleep 1
