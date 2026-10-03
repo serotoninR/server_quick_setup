@@ -224,7 +224,7 @@ write_config() {
         exit 1
     fi
 
-    chmod 600 "$CONFIG"
+    chmod 644 "$CONFIG"
     ok "Конфигурация записана в $CONFIG."
 }
 
