@@ -37,10 +37,28 @@ require_root() {
 # [1/11]
 initial_update() {
     step 1 "Обновление системы и установка ufw"
+
+    echo
+    echo "Выберите режим обновления:"
+    echo "  1) apt update — только обновить список пакетов (быстро)"
+    echo "  2) apt update + apt upgrade — полное обновление системы (долго)"
+    echo
+    read -rp "Введите 1 или 2 [по умолчанию 1]: " _mode
+    _mode="${_mode:-1}"
+
     apt-get update -y
-    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+    case "$_mode" in
+        2)
+            ok "Режим: полное обновление (update + upgrade)."
+            DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+            ;;
+        *)
+            ok "Режим: только update."
+            ;;
+    esac
+
     DEBIAN_FRONTEND=noninteractive apt-get install -y ufw
-    ok "Система обновлена, ufw установлен (правила не добавлялись)."
+    ok "ufw установлен (правила не добавлялись)."
 }
 
 # [2/11]
@@ -280,6 +298,7 @@ tmp=$(mktemp)
 jq --arg id "$new_uuid" --arg n "$name" \
    '.inbounds[0].settings.users += [{"id":$id,"email":$n,"flow":"xtls-rprx-vision"}]' \
    "$CONFIG" > "$tmp" && mv "$tmp" "$CONFIG"
+chmod 644 "$CONFIG"
 
 systemctl restart xray
 
@@ -369,6 +388,7 @@ tmp=$(mktemp)
 jq --arg n "$target" \
    '.inbounds[0].settings.users |= map(select(.email != $n))' \
    "$CONFIG" > "$tmp" && mv "$tmp" "$CONFIG"
+chmod 644 "$CONFIG"
 
 systemctl restart xray
 echo "Клиент '$target' удалён"
