@@ -93,7 +93,8 @@ sudo ufw default allow outgoing
 
 # Добавляем правила
 sudo ufw limit $SSH_PORT/tcp comment 'SSH'
-sudo ufw allow 443/tcp comment 'HTTPS'
+sudo ufw allow 443 comment 'HTTPS'
+sudo ufw allow 8443 comment 'HTTPS2'
 
 # Включаем UFW
 echo -e "${YELLOW}Включение UFW...${NC}"
